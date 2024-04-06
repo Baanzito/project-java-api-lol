@@ -3,11 +3,9 @@ package me.dio.sdw24.application;
 import me.dio.sdw24.domain.exception.ChampionNotFoundException;
 import me.dio.sdw24.domain.model.Champion;
 import me.dio.sdw24.domain.ports.ChampionsRepository;
-import me.dio.sdw24.domain.ports.GenerativeAiApi;
+import me.dio.sdw24.domain.ports.GenerativeAiService;
 
-import java.util.List;
-
-public record AskChampionUseCase(ChampionsRepository repository, GenerativeAiApi genAiApi) {
+public record AskChampionUseCase(ChampionsRepository repository, GenerativeAiService genAiApi) {
 
     public String askChampion(Long championId, String question){
 
@@ -17,11 +15,11 @@ public record AskChampionUseCase(ChampionsRepository repository, GenerativeAiApi
         String context = champion.generateContextByQuestion(question);
         String objective = """
                 Atue commo uma assistente com a habilidade de se comportar como os Campeões do League of Legends (LOL).
-                Responda perguntas
-                """
+                Responda perguntas incorporando a personalidade e estilo de um determinado Campeão.
+                Segue a pergunta, o nome do Campeão e sua respectiva lore (historia):
+                
+                """;
 
-        genAiApi.generateContent(objective, context);
-
-        return context;
+        return genAiApi.generateContent(objective, context);
     }
 }
